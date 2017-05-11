@@ -27,9 +27,17 @@ namespace FileConverter
                 fs.Write(info, 0, info.Length);
             }
             */
-            StreamReader sr = File.OpenText("Test.txt");
-            //FileStream fsConverted = File.Create("Test_converted.txt");
-            int batchCount = 500;
+            string inputFileName = "Test";
+            string fileExtension = "txt";
+            StreamReader sr = File.OpenText(inputFileName + "." + fileExtension);
+            string outputFileName = inputFileName + "_converted." + fileExtension;
+            if (File.Exists(outputFileName))
+            {
+                File.Delete(outputFileName);
+            }
+                
+            FileStream fsConverted = File.Create(outputFileName);
+            int batchCount = 1000;
             List<string> batchData = new List<string>(batchCount);
             string[] convertedData = new string[batchCount];
             string data = String.Empty;
@@ -44,13 +52,16 @@ namespace FileConverter
                 {
                     CheckBatchData(batchData, deletedChars, convertedData);
                     //CheckBatchDataParallel(batchData, deletedChars, convertedData);
+                    WriteDataToFile(convertedData, batchData.Count, fsConverted);
                     batchData.Clear();
-
+                    
                 }
             }
             CheckBatchData(batchData, deletedChars, convertedData);
             //CheckBatchDataParallel(batchData, deletedChars, convertedData);
+            WriteDataToFile(convertedData, batchData.Count, fsConverted);
             batchData.Clear();
+            
 
             DateTime endTime = DateTime.Now;
             TimeSpan productionTime = endTime - startTime;
@@ -90,6 +101,7 @@ namespace FileConverter
                 }
             }
             createdString.Append(curWord);
+            createdString.Append("\n");
             outputString = createdString.ToString();
             return outputString;
         }
@@ -123,6 +135,16 @@ namespace FileConverter
 
 
                 });
+        }
+
+        static void WriteDataToFile(string[] convertedData, int elementsAmount, FileStream fs)
+        {
+            for(int i= 0; i<elementsAmount; ++i)
+            {
+                byte[] info = new UTF8Encoding(true).GetBytes(convertedData[i]);
+                fs.Write(info, 0, info.Length);
+            }
+            
         }
     }
 }
