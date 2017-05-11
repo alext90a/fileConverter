@@ -33,7 +33,7 @@ namespace FileConverter
             List<string> batchData = new List<string>(batchCount);
             string[] convertedData = new string[batchCount];
             string data = String.Empty;
-            char searchedChar = '!';
+            List<char> deletedChars = new List<char>() { ',', '.', '!', '?', ':', ';' };
             int amountOfChars = 0;
 
             DateTime startTime = DateTime.Now;
@@ -42,14 +42,14 @@ namespace FileConverter
                 batchData.Add(data);
                 if (batchData.Count == batchCount)
                 {
-                    //CheckBatchData(batchData, searchedChar, convertedData);
-                    CheckBatchDataParallel(batchData, searchedChar, convertedData);
+                    CheckBatchData(batchData, deletedChars, convertedData);
+                    //CheckBatchDataParallel(batchData, deletedChars, convertedData);
                     batchData.Clear();
 
                 }
             }
-            //CheckBatchData(batchData, searchedChar, convertedData);
-            CheckBatchDataParallel(batchData, searchedChar, convertedData);
+            CheckBatchData(batchData, deletedChars, convertedData);
+            //CheckBatchDataParallel(batchData, deletedChars, convertedData);
             batchData.Clear();
 
             DateTime endTime = DateTime.Now;
@@ -63,13 +63,17 @@ namespace FileConverter
 
         }
 
-        static string ConvertString(string inputString, int minLength)
+        static string ConvertString(string inputString, int minLength, List<char> deletedChars)
         {
             String outputString = String.Empty;
             StringBuilder createdString = new StringBuilder();
             StringBuilder curWord = new StringBuilder();
             for(int i=0; i<inputString.Length; ++i)
             {
+                if(deletedChars.Contains(inputString[i]))
+                {
+                    continue;
+                }
                 if(inputString[i] != ' ')
                 {
                     curWord.Append(inputString[i]);
@@ -79,7 +83,7 @@ namespace FileConverter
                     if(curWord.Length>= minLength)
                     {
                         createdString.Append(curWord);
-                        createdString.Append(' ');
+                        createdString.Append(inputString[i]);
                         
                     }
                     curWord.Clear();
@@ -90,38 +94,35 @@ namespace FileConverter
             return outputString;
         }
 
-        static void CheckBatchData(List<string> batchData, char searchedChar, string[] convertedData)
+        static void CheckBatchData(List<string> batchData, List<char> deletedChars, string[] convertedData)
         {
             for (int i = 0; i < batchData.Count; ++i)
             {
                 string curString = batchData[i];
-                convertedData[i] = ConvertString(curString, 4);
+                                
+                convertedData[i] = ConvertString(curString, 4, deletedChars);
 
             }
             
         }
 
-        static void CheckBatchDataParallel(List<string> batchData, char searchedChar, string[] convertedData)
+        static void CheckBatchDataParallel(List<string> batchData, List<char> deletedChars, string[] convertedData)
         {
 
 
 
 
             object lockObject = new object();
-            int amount = 0;
             Parallel.For(0, batchData.Count,
 
                 (i) =>
                 {
-                    string curString = batchData[0];
-                    convertedData[i] = ConvertString(curString, 4);
-                    //list.Add(ConvertString(curString, 4));
-
+                    string curString = batchData[i];
                     
+                    convertedData[i] = ConvertString(curString, 4, deletedChars);
+
+
                 });
-
-
-            //convertedData.Clear();
         }
     }
 }
