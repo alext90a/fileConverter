@@ -22,7 +22,6 @@ namespace FileConverter
             mConvertBtn.Enabled = false;
             mMinWordLenNum.Value = mFileConverter.minLength;
             mDeletePunctMarkChkBox.Checked = mFileConverter.isNeedPunctuationDelete;
-            mFileConverter.OnProgressEvent += updateProgressBar;
 
         }
 
@@ -57,7 +56,7 @@ namespace FileConverter
             mFileConvertGB.Enabled = false;
             mProcGB.Visible = true;
             //mProcGB.Update();
-            Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted); });
+            Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted, linesProcessed); });
             
         }
 
@@ -71,13 +70,6 @@ namespace FileConverter
             mFileConverter.minLength = (int)mMinWordLenNum.Value;
         }
 
-        void updateProgressBar(float perc)
-        {
-            this.Invoke((MethodInvoker)delegate
-            {
-                mProgressBar.Value = (int)perc;
-            });
-        }
 
         private void mProgressBar_Click(object sender, EventArgs e)
         {
@@ -97,5 +89,14 @@ namespace FileConverter
                 mFileConvertGB.Enabled = true;
             });
         }
+
+        void linesProcessed(string linesAmount)
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                mLinesProcessed.Text = linesAmount;
+            });
+        }
+
     }
 }

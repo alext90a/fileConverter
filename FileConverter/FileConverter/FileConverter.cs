@@ -16,15 +16,15 @@ namespace FileConverter
         int mMinLength = 4;
         bool mIsNeedPunctuationDelete = true;
 
-        public delegate void onProgress(float percent);
-        public event onProgress OnProgressEvent;
-
         public delegate void OnConvertCompleted();
         OnConvertCompleted mOnConverCompleted = null;
 
+        public delegate void OnLinesBatchProcessed(string linesAmount);
+        OnLinesBatchProcessed mOnLinesBatchProcessed = null;
+
         public FileConverter()
         {
-            OnProgressEvent += progress;
+
         }
 
         public void setInputFiles(string[] inputFiles)
@@ -44,9 +44,10 @@ namespace FileConverter
             return mOutputFiles;
         }
 
-        public void startConvert(OnConvertCompleted completeFunc)
+        public void startConvert(OnConvertCompleted completeFunc, OnLinesBatchProcessed batchProcFunc)
         {
             mOnConverCompleted = completeFunc;
+            mOnLinesBatchProcessed = batchProcFunc;
             for(int i=0; i<mInputFiles.Count; ++i)
             {
                 convertSelectedFile(mInputFiles[i], mOutputFiles[i]);
@@ -94,28 +95,26 @@ namespace FileConverter
             List<string> batchData = new List<string>(batchCount);
             string[] convertedData = new string[batchCount];
             string data = String.Empty;
-            float curProgress = 0f;
-
+            long totalLines = 0;
             DateTime startTime = DateTime.Now;
             while ((data = sr.ReadLine()) != null)
             {
                 batchData.Add(data);
                 if (batchData.Count == batchCount)
                 {
-                    //int batchSize = System.Text.ASCIIEncoding.Unicode.GetByteCount(batchData[batchData.Count-1]) * batchData.Count;
-                    int batchSize = batchData[batchData.Count - 1].Length *batchData.Count;
                     CheckBatchData(batchData, convertedData);
                     //CheckBatchDataParallel(batchData, deletedChars, convertedData);
                     WriteDataToFile(convertedData, batchData.Count, fsConverted);
+                    totalLines += batchData.Count;
+                    mOnLinesBatchProcessed(totalLines.ToString());
                     batchData.Clear();
-                    curProgress += ((float)batchSize / (float)fileLength)*100f;
-
-                    OnProgressEvent(curProgress);
                 }
             }
             CheckBatchData(batchData, convertedData);
             //CheckBatchDataParallel(batchData, deletedChars, convertedData);
             WriteDataToFile(convertedData, batchData.Count, fsConverted);
+            totalLines += batchData.Count;
+            mOnLinesBatchProcessed(totalLines.ToString());
             batchData.Clear();
             
 
@@ -199,11 +198,6 @@ namespace FileConverter
                 fs.Write(info, 0, info.Length);
             }
             */
-        }
-
-        void progress(float perc)
-        {
-
         }
     }
 }

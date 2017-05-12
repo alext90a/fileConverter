@@ -36,11 +36,10 @@
             this.mDeletePunctMarkChkBox = new System.Windows.Forms.CheckBox();
             this.mMinWordLenNum = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.mProgressBar = new System.Windows.Forms.ProgressBar();
             this.mFileConvertGB = new System.Windows.Forms.GroupBox();
             this.mProcGB = new System.Windows.Forms.GroupBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.mLinesProcessed = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -124,17 +123,8 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Min word length";
             // 
-            // mProgressBar
-            // 
-            this.mProgressBar.Location = new System.Drawing.Point(238, 231);
-            this.mProgressBar.Name = "mProgressBar";
-            this.mProgressBar.Size = new System.Drawing.Size(241, 23);
-            this.mProgressBar.TabIndex = 10;
-            this.mProgressBar.Click += new System.EventHandler(this.mProgressBar_Click);
-            // 
             // mFileConvertGB
             // 
-            this.mFileConvertGB.Controls.Add(this.mProgressBar);
             this.mFileConvertGB.Controls.Add(this.label1);
             this.mFileConvertGB.Controls.Add(this.mMinWordLenNum);
             this.mFileConvertGB.Controls.Add(this.mDeletePunctMarkChkBox);
@@ -156,7 +146,7 @@
             this.mProcGB.Controls.Add(this.label5);
             this.mProcGB.Controls.Add(this.label4);
             this.mProcGB.Controls.Add(this.label3);
-            this.mProcGB.Controls.Add(this.label2);
+            this.mProcGB.Controls.Add(this.mLinesProcessed);
             this.mProcGB.Controls.Add(this.pictureBox1);
             this.mProcGB.Location = new System.Drawing.Point(30, 280);
             this.mProcGB.Name = "mProcGB";
@@ -176,15 +166,15 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // label2
+            // mLinesProcessed
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(222, 137);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(25, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "125";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.mLinesProcessed.AutoSize = true;
+            this.mLinesProcessed.Location = new System.Drawing.Point(222, 137);
+            this.mLinesProcessed.Name = "mLinesProcessed";
+            this.mLinesProcessed.Size = new System.Drawing.Size(25, 13);
+            this.mLinesProcessed.TabIndex = 1;
+            this.mLinesProcessed.Text = "125";
+            this.mLinesProcessed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label3
             // 
@@ -262,11 +252,10 @@
         private System.Windows.Forms.CheckBox mDeletePunctMarkChkBox;
         private System.Windows.Forms.NumericUpDown mMinWordLenNum;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ProgressBar mProgressBar;
         private System.Windows.Forms.GroupBox mFileConvertGB;
         private System.Windows.Forms.GroupBox mProcGB;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label mLinesProcessed;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
