@@ -1,0 +1,209 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FileConverter
+{
+    class FileConverter
+    {
+        List<string> mInputFiles = new List<string>();
+        List<string> mOutputFiles = new List<string>();
+        string kDefaultConverterSuffix = "_converted";
+        List<char> mDeletedChars = new List<char>() { ',', '.', '!', '?', ':', ';' };
+        int mMinLength = 4;
+        bool mIsNeedPunctuationDelete = true;
+
+        public delegate void onProgress(float percent);
+        public event onProgress OnProgressEvent;
+
+        public delegate void OnConvertCompleted();
+        OnConvertCompleted mOnConverCompleted = null;
+
+        public FileConverter()
+        {
+            OnProgressEvent += progress;
+        }
+
+        public void setInputFiles(string[] inputFiles)
+        {
+            mInputFiles.AddRange(inputFiles);
+            for(int i=0; i<inputFiles.Length; ++i)
+            {
+                int delimIndex = inputFiles[i].LastIndexOf('.');
+                string filePath = inputFiles[i].Substring(0, inputFiles[i].LastIndexOf('.'));
+                string fileExt = inputFiles[i].Substring(delimIndex + 1, inputFiles[i].Length - delimIndex - 1);
+                mOutputFiles.Add(filePath + kDefaultConverterSuffix + '.' + fileExt);
+            }
+        }
+
+        public List<string> getOutputFileNames()
+        {
+            return mOutputFiles;
+        }
+
+        public void startConvert(OnConvertCompleted completeFunc)
+        {
+            mOnConverCompleted = completeFunc;
+            for(int i=0; i<mInputFiles.Count; ++i)
+            {
+                convertSelectedFile(mInputFiles[i], mOutputFiles[i]);
+            }
+        }
+
+        public bool isNeedPunctuationDelete
+        {
+            get
+            {
+                return mIsNeedPunctuationDelete;
+            }
+            set
+            {
+                mIsNeedPunctuationDelete = value;
+            }
+        }
+
+        public int minLength
+        {
+            get
+            {
+                return mMinLength;
+            }
+            set
+            {
+                mMinLength = value;
+            }
+        }
+
+        void convertSelectedFile(string inputFileName, string outputFileName)
+        {
+
+            FileInfo curInfo = new FileInfo(inputFileName);
+            long fileLength = curInfo.Length;
+            StreamReader sr = File.OpenText(inputFileName);
+            
+            if (File.Exists(outputFileName))
+            {
+                File.Delete(outputFileName);
+            }
+                
+            FileStream fsConverted = File.Create(outputFileName);
+            int batchCount = 1000;
+            List<string> batchData = new List<string>(batchCount);
+            string[] convertedData = new string[batchCount];
+            string data = String.Empty;
+            float curProgress = 0f;
+
+            DateTime startTime = DateTime.Now;
+            while ((data = sr.ReadLine()) != null)
+            {
+                batchData.Add(data);
+                if (batchData.Count == batchCount)
+                {
+                    //int batchSize = System.Text.ASCIIEncoding.Unicode.GetByteCount(batchData[batchData.Count-1]) * batchData.Count;
+                    int batchSize = batchData[batchData.Count - 1].Length *batchData.Count;
+                    CheckBatchData(batchData, convertedData);
+                    //CheckBatchDataParallel(batchData, deletedChars, convertedData);
+                    WriteDataToFile(convertedData, batchData.Count, fsConverted);
+                    batchData.Clear();
+                    curProgress += ((float)batchSize / (float)fileLength)*100f;
+
+                    OnProgressEvent(curProgress);
+                }
+            }
+            CheckBatchData(batchData, convertedData);
+            //CheckBatchDataParallel(batchData, deletedChars, convertedData);
+            WriteDataToFile(convertedData, batchData.Count, fsConverted);
+            batchData.Clear();
+            
+
+            DateTime endTime = DateTime.Now;
+            TimeSpan productionTime = endTime - startTime;
+            mOnConverCompleted();
+        }
+
+        static string ConvertString(string inputString, int minLength, List<char> deletedChars, bool isDeletionNeeded)
+        {
+            String outputString = String.Empty;
+            StringBuilder createdString = new StringBuilder();
+            StringBuilder curWord = new StringBuilder();
+            for (int i = 0; i < inputString.Length; ++i)
+            {
+                if (isDeletionNeeded && deletedChars.Contains(inputString[i]))
+                {
+                    continue;
+                }
+                if (inputString[i] != ' ')
+                {
+                    curWord.Append(inputString[i]);
+                }
+                else
+                {
+                    if (curWord.Length >= minLength)
+                    {
+                        createdString.Append(curWord);
+                        createdString.Append(inputString[i]);
+
+                    }
+                    curWord.Clear();
+                }
+            }
+            createdString.Append(curWord);
+            createdString.Append("\n");
+            outputString = createdString.ToString();
+            return outputString;
+        }
+
+        void CheckBatchDataParallel(List<string> batchData, string[] convertedData)
+        {
+            object lockObject = new object();
+
+            Parallel.For(0, batchData.Count,
+                (i) =>
+                {
+                    string curString = batchData[i];
+                    convertedData[i] = ConvertString(curString, mMinLength, mDeletedChars, mIsNeedPunctuationDelete);
+                });
+        }
+
+        void WriteDataToFile(string[] convertedData, int elementsAmount, FileStream fs)
+        {
+            for (int i = 0; i < elementsAmount; ++i)
+            {
+                byte[] info = new UTF8Encoding(true).GetBytes(convertedData[i]);
+                fs.Write(info, 0, info.Length);
+            }
+        }
+
+        void CheckBatchData(List<string> batchData, string[] convertedData)
+        {
+            for (int i = 0; i < batchData.Count; ++i)
+            {
+                string curString = batchData[i];
+                convertedData[i] = ConvertString(curString, mMinLength, mDeletedChars, mIsNeedPunctuationDelete);
+            }
+        }
+
+        
+
+        void CreateTestFile()
+        {
+            /*
+            FileStream fs = File.Create("Test.txt");
+
+            for(int i = 0; i< 1000000; ++i)
+            {
+                byte[] info = new UTF8Encoding(true).GetBytes("Some text"+ Guid.NewGuid().ToString()+", and messages, and questions!\n");
+                fs.Write(info, 0, info.Length);
+            }
+            */
+        }
+
+        void progress(float perc)
+        {
+
+        }
+    }
+}
