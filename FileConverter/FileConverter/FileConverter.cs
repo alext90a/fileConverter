@@ -61,6 +61,7 @@ namespace FileConverter
                 mOnNextFileProcessed(sb.ToString(), mInputFiles[i].Name);
                 convertSelectedFile(mInputFiles[i].FullName, mOutputFiles[i]);
             }
+            mOnConverCompleted();
         }
 
         public bool isNeedPunctuationDelete
@@ -129,7 +130,7 @@ namespace FileConverter
 
             DateTime endTime = DateTime.Now;
             TimeSpan productionTime = endTime - startTime;
-            mOnConverCompleted();
+            
         }
 
         static string ConvertString(string inputString, int minLength, List<char> deletedChars, bool isDeletionNeeded)

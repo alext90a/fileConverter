@@ -55,7 +55,6 @@ namespace FileConverter
         {
             mFileConvertGB.Enabled = false;
             mProcGB.Visible = true;
-            //mProcGB.Update();
             Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted, linesProcessed, nextFileProccessed); });
             
         }
