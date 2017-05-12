@@ -80,12 +80,13 @@ namespace FileConverter
 
         }
 
-        void convertCompleted()
+        void convertCompleted(string convertTime)
         {
             this.Invoke((MethodInvoker)delegate
             {
-                mProcGB.Enabled = false;
+                mProcGB.Visible = false;
                 mFileConvertGB.Enabled = true;
+                mConvertTime.Text = convertTime;
             });
         }
 

@@ -45,6 +45,8 @@
             this.mFileName = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.mFileIndex = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.mConvertTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.mMinWordLenNum)).BeginInit();
             this.mFileConvertGB.SuspendLayout();
             this.mProcGB.SuspendLayout();
@@ -76,7 +78,7 @@
             this.mOutputFilesListBox.HorizontalScrollbar = true;
             this.mOutputFilesListBox.Location = new System.Drawing.Point(236, 48);
             this.mOutputFilesListBox.Name = "mOutputFilesListBox";
-            this.mOutputFilesListBox.Size = new System.Drawing.Size(243, 95);
+            this.mOutputFilesListBox.Size = new System.Drawing.Size(195, 95);
             this.mOutputFilesListBox.TabIndex = 3;
             // 
             // mConvertBtn
@@ -125,6 +127,8 @@
             // 
             // mFileConvertGB
             // 
+            this.mFileConvertGB.Controls.Add(this.mConvertTime);
+            this.mFileConvertGB.Controls.Add(this.label2);
             this.mFileConvertGB.Controls.Add(this.label1);
             this.mFileConvertGB.Controls.Add(this.mMinWordLenNum);
             this.mFileConvertGB.Controls.Add(this.mDeletePunctMarkChkBox);
@@ -225,6 +229,23 @@
             this.mFileIndex.Text = "1/3";
             this.mFileIndex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(236, 162);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(83, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Convertion time:";
+            // 
+            // mConvertTime
+            // 
+            this.mConvertTime.AutoSize = true;
+            this.mConvertTime.Location = new System.Drawing.Point(326, 162);
+            this.mConvertTime.Name = "mConvertTime";
+            this.mConvertTime.Size = new System.Drawing.Size(0, 13);
+            this.mConvertTime.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -261,6 +282,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label mFileName;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label mConvertTime;
+        private System.Windows.Forms.Label label2;
     }
 }
 

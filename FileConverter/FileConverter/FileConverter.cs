@@ -15,8 +15,9 @@ namespace FileConverter
         List<char> mDeletedChars = new List<char>() { ',', '.', '!', '?', ':', ';' };
         int mMinLength = 4;
         bool mIsNeedPunctuationDelete = true;
+        TimeSpan mConvertTime;
 
-        public delegate void OnConvertCompleted();
+        public delegate void OnConvertCompleted(string convertTime);
         OnConvertCompleted mOnConverCompleted = null;
 
         public delegate void OnLinesBatchProcessed(string linesAmount);
@@ -32,7 +33,8 @@ namespace FileConverter
 
         public void setInputFiles(string[] inputFiles)
         {
-
+            mInputFiles.Clear();
+            mOutputFiles.Clear();
             
             for(int i=0; i<inputFiles.Length; ++i)
             {
@@ -50,6 +52,7 @@ namespace FileConverter
 
         public void startConvert(OnConvertCompleted completeFunc, OnLinesBatchProcessed batchProcFunc, OnNextFileProcessed nextFileFunc)
         {
+            mConvertTime = new TimeSpan();
             mOnConverCompleted = completeFunc;
             mOnLinesBatchProcessed = batchProcFunc;
             mOnNextFileProcessed = nextFileFunc;
@@ -57,11 +60,15 @@ namespace FileConverter
             for(int i=0; i<mInputFiles.Count; ++i)
             {
                 sb.Clear();
-                sb.Append(i.ToString() + "/" + mInputFiles.Count.ToString());
+                sb.Append((i+1).ToString() + "/" + mInputFiles.Count.ToString());
                 mOnNextFileProcessed(sb.ToString(), mInputFiles[i].Name);
                 convertSelectedFile(mInputFiles[i].FullName, mOutputFiles[i]);
             }
-            mOnConverCompleted();
+
+            //TimeSpan ts = new TimeSpan(3, 42, 0);
+            string convertTime = String.Format("{0:%h} hours {0:%m} minutes {0:%s\\.ff} seconds", mConvertTime);
+            //Console.WriteLine("{0:%h} hours {0:%m} minutes", ts);
+            mOnConverCompleted(convertTime);
         }
 
         public bool isNeedPunctuationDelete
@@ -93,7 +100,7 @@ namespace FileConverter
 
             FileInfo curInfo = new FileInfo(inputFileName);
             long fileLength = curInfo.Length;
-            StreamReader sr = File.OpenText(inputFileName);
+            StreamReader inputReader = File.OpenText(inputFileName);
             
             if (File.Exists(outputFileName))
             {
@@ -107,30 +114,31 @@ namespace FileConverter
             string data = String.Empty;
             long totalLines = 0;
             DateTime startTime = DateTime.Now;
-            while ((data = sr.ReadLine()) != null)
+            while ((data = inputReader.ReadLine()) != null)
             {
                 batchData.Add(data);
                 if (batchData.Count == batchCount)
                 {
-                    CheckBatchData(batchData, convertedData);
-                    //CheckBatchDataParallel(batchData, deletedChars, convertedData);
+                    //CheckBatchData(batchData, convertedData);
+                    CheckBatchDataParallel(batchData, convertedData);
                     WriteDataToFile(convertedData, batchData.Count, fsConverted);
                     totalLines += batchData.Count;
                     mOnLinesBatchProcessed(totalLines.ToString());
                     batchData.Clear();
                 }
             }
-            CheckBatchData(batchData, convertedData);
-            //CheckBatchDataParallel(batchData, deletedChars, convertedData);
+            //CheckBatchData(batchData, convertedData);
+            CheckBatchDataParallel(batchData, convertedData);
             WriteDataToFile(convertedData, batchData.Count, fsConverted);
             totalLines += batchData.Count;
             mOnLinesBatchProcessed(totalLines.ToString());
             batchData.Clear();
-            
+            fsConverted.Close();
+            inputReader.Close();
 
             DateTime endTime = DateTime.Now;
-            TimeSpan productionTime = endTime - startTime;
-            
+            //TimeSpan productionTime = endTime - startTime;
+            mConvertTime += endTime - startTime;
         }
 
         static string ConvertString(string inputString, int minLength, List<char> deletedChars, bool isDeletionNeeded)
