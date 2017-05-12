@@ -31,18 +31,13 @@ namespace FileConverter
 
         }
 
-        public void setInputFiles(string[] inputFiles)
+        public void addInputFiles(string inputFile)
         {
-            mInputFiles.Clear();
-            mOutputFiles.Clear();
-            
-            for(int i=0; i<inputFiles.Length; ++i)
-            {
-                mInputFiles.Add(new FileInfo(inputFiles[i]));
+            FileInfo curFileInfo = new FileInfo(inputFile);
+            mInputFiles.Add(curFileInfo);
 
                 
-                mOutputFiles.Add(mInputFiles[i].FullName.Substring(0, mInputFiles[i].FullName.LastIndexOf('.')) + kDefaultConverterSuffix + mInputFiles[i].Extension);
-            }
+            mOutputFiles.Add(curFileInfo.FullName.Substring(0, curFileInfo.FullName.LastIndexOf('.')) + kDefaultConverterSuffix + curFileInfo.Extension);
         }
 
         public List<string> getOutputFileNames()
@@ -93,6 +88,12 @@ namespace FileConverter
             {
                 mMinLength = value;
             }
+        }
+
+        public void removeFile(int index)
+        {
+            mInputFiles.RemoveAt(index);
+            mOutputFiles.RemoveAt(index);
         }
 
         void convertSelectedFile(string inputFileName, string outputFileName)

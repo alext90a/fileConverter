@@ -15,6 +15,7 @@ namespace FileConverter
     public partial class Form1 : Form
     {
         FileConverter mFileConverter = new FileConverter();
+        HashSet<string> mAlreadyAddedFiles = new HashSet<string>();
         public Form1()
         {
             
@@ -22,6 +23,7 @@ namespace FileConverter
             mConvertBtn.Enabled = false;
             mMinWordLenNum.Value = mFileConverter.minLength;
             mDeletePunctMarkChkBox.Checked = mFileConverter.isNeedPunctuationDelete;
+            mDelSelBtn.Enabled = false;
 
         }
 
@@ -38,11 +40,20 @@ namespace FileConverter
             openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             if(openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string[] inputFiles = openFileDialog.FileNames;                
-                mInputFileListBox.Items.Clear();
+                string[] inputFiles = openFileDialog.FileNames;
+                for (int i = 0; i < inputFiles.Length; ++i)
+                {
+                    if (mAlreadyAddedFiles.Contains(inputFiles[i]))
+                    {
+                        continue;
+                    }
+                
+                    mInputFileListBox.Items.Add(inputFiles[i]);
+                    mFileConverter.addInputFiles(inputFiles[i]);
+                    mAlreadyAddedFiles.Add(inputFiles[i]);
+                }
+                
                 mOutputFilesListBox.Items.Clear();
-                mInputFileListBox.Items.AddRange(inputFiles);
-                mFileConverter.setInputFiles(inputFiles);
                 mOutputFilesListBox.Items.AddRange(mFileConverter.getOutputFileNames().ToArray());
                 if(inputFiles.Length > 0)
                 {
@@ -107,5 +118,24 @@ namespace FileConverter
             });
         }
 
+        private void mDelSelBtn_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = mInputFileListBox.SelectedIndex;
+            mAlreadyAddedFiles.Remove((string)mInputFileListBox.SelectedItem);
+            mFileConverter.removeFile(selectedIndex);
+            mOutputFilesListBox.Items.RemoveAt(selectedIndex);
+            mInputFileListBox.Items.RemoveAt(selectedIndex);
+            mDelSelBtn.Enabled = false;
+            if(mInputFileListBox.Items.Count == 0)
+            {
+                mConvertBtn.Enabled = false;
+            }
+        }
+
+        private void mInputFileListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mOutputFilesListBox.SelectedIndex = mInputFileListBox.SelectedIndex;
+            mDelSelBtn.Enabled = true;
+        }
     }
 }

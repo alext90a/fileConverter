@@ -47,6 +47,7 @@
             this.mFileIndex = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.mConvertTime = new System.Windows.Forms.Label();
+            this.mDelSelBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mMinWordLenNum)).BeginInit();
             this.mFileConvertGB.SuspendLayout();
             this.mProcGB.SuspendLayout();
@@ -61,6 +62,7 @@
             this.mInputFileListBox.Name = "mInputFileListBox";
             this.mInputFileListBox.Size = new System.Drawing.Size(171, 95);
             this.mInputFileListBox.TabIndex = 1;
+            this.mInputFileListBox.SelectedIndexChanged += new System.EventHandler(this.mInputFileListBox_SelectedIndexChanged);
             // 
             // mSelectInputFiles
             // 
@@ -68,7 +70,7 @@
             this.mSelectInputFiles.Name = "mSelectInputFiles";
             this.mSelectInputFiles.Size = new System.Drawing.Size(75, 23);
             this.mSelectInputFiles.TabIndex = 2;
-            this.mSelectInputFiles.Text = "Select files";
+            this.mSelectInputFiles.Text = "Add files";
             this.mSelectInputFiles.UseVisualStyleBackColor = true;
             this.mSelectInputFiles.Click += new System.EventHandler(this.mSelectInputFiles_Click);
             // 
@@ -127,6 +129,7 @@
             // 
             // mFileConvertGB
             // 
+            this.mFileConvertGB.Controls.Add(this.mDelSelBtn);
             this.mFileConvertGB.Controls.Add(this.mConvertTime);
             this.mFileConvertGB.Controls.Add(this.label2);
             this.mFileConvertGB.Controls.Add(this.label1);
@@ -246,6 +249,16 @@
             this.mConvertTime.Size = new System.Drawing.Size(0, 13);
             this.mConvertTime.TabIndex = 11;
             // 
+            // mDelSelBtn
+            // 
+            this.mDelSelBtn.Location = new System.Drawing.Point(114, 18);
+            this.mDelSelBtn.Name = "mDelSelBtn";
+            this.mDelSelBtn.Size = new System.Drawing.Size(75, 23);
+            this.mDelSelBtn.TabIndex = 12;
+            this.mDelSelBtn.Text = "Del selected";
+            this.mDelSelBtn.UseVisualStyleBackColor = true;
+            this.mDelSelBtn.Click += new System.EventHandler(this.mDelSelBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -284,6 +297,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label mConvertTime;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button mDelSelBtn;
     }
 }
 
