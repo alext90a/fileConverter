@@ -16,6 +16,7 @@ namespace FileConverter
     {
         FileConverter mFileConverter = new FileConverter();
         HashSet<string> mAlreadyAddedFiles = new HashSet<string>();
+        HashSet<string> mOutputFiles = new HashSet<string>();
         public Form1()
         {
             
@@ -23,7 +24,10 @@ namespace FileConverter
             mConvertBtn.Enabled = false;
             mMinWordLenNum.Value = mFileConverter.minLength;
             mDeletePunctMarkChkBox.Checked = mFileConverter.isNeedPunctuationDelete;
-            mDelSelBtn.Enabled = false;
+            changeButtonsState(false);
+
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
 
         }
 
@@ -54,7 +58,14 @@ namespace FileConverter
                 }
                 
                 mOutputFilesListBox.Items.Clear();
-                mOutputFilesListBox.Items.AddRange(mFileConverter.getOutputFileNames().ToArray());
+                List<string> outputFiles = mFileConverter.getOutputFileNames();
+                for(int i=0; i<outputFiles.Count; ++i)
+                {
+                    mOutputFilesListBox.Items.Add(outputFiles[i]);
+                    mOutputFiles.Add(outputFiles[i]);
+                }
+                
+                
                 if(inputFiles.Length > 0)
                 {
                     mConvertBtn.Enabled = true;
@@ -66,13 +77,16 @@ namespace FileConverter
         {
             mFileConvertGB.Enabled = false;
             mProcGB.Visible = true;
-            Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted, linesProcessed, nextFileProccessed); });
+            mErrorGB.Visible = false;
+            mExceptionBox.Visible = false;
+            mExceptionBox.Clear();
+            Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted, linesProcessed, nextFileProccessed, exceptionOccured); });
             
         }
 
         private void mDeletePunctMarkChkBox_CheckedChanged(object sender, EventArgs e)
         {
-            mFileConverter.isNeedPunctuationDelete = !mFileConverter.isNeedPunctuationDelete;
+            mFileConverter.isNeedPunctuationDelete = mDeletePunctMarkChkBox.Checked;
         }
 
         private void mMinWordLenNum_ValueChanged(object sender, EventArgs e)
@@ -118,6 +132,19 @@ namespace FileConverter
             });
         }
 
+        void exceptionOccured(string description)
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                mErrorGB.Visible = true;
+                mExceptionBox.Visible = true;
+                mExceptionBox.Text = description;
+                mProcGB.Enabled = false;
+                mFileConvertGB.Enabled = true;
+
+            });
+        }
+
         private void mDelSelBtn_Click(object sender, EventArgs e)
         {
             int selectedIndex = mInputFileListBox.SelectedIndex;
@@ -125,7 +152,7 @@ namespace FileConverter
             mFileConverter.removeFile(selectedIndex);
             mOutputFilesListBox.Items.RemoveAt(selectedIndex);
             mInputFileListBox.Items.RemoveAt(selectedIndex);
-            mDelSelBtn.Enabled = false;
+            changeButtonsState(false);
             if(mInputFileListBox.Items.Count == 0)
             {
                 mConvertBtn.Enabled = false;
@@ -135,7 +162,53 @@ namespace FileConverter
         private void mInputFileListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             mOutputFilesListBox.SelectedIndex = mInputFileListBox.SelectedIndex;
-            mDelSelBtn.Enabled = true;
+            changeButtonsState(true);
+        }
+
+        private void mOutputFilesListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mInputFileListBox.SelectedIndex = mOutputFilesListBox.SelectedIndex;
+            changeButtonsState(true);
+        }
+
+        void changeButtonsState(bool enabled)
+        {
+            mDelSelBtn.Enabled = enabled;
+            mEditOutput.Enabled = enabled;
+        }
+
+        private void mEditOutput_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            FileInfo curFileInfo = new FileInfo(mFileConverter.getOutputFileNames()[mOutputFilesListBox.SelectedIndex]);
+            saveFileDialog.DefaultExt = curFileInfo.Extension;
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.OverwritePrompt = false;
+            saveFileDialog.InitialDirectory = curFileInfo.DirectoryName;
+            saveFileDialog.FileName = curFileInfo.Name;
+
+            
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string newPath = saveFileDialog.FileName;
+                if(!mOutputFiles.Contains(newPath))
+                {
+                    mFileConverter.setFileOutputPath(mOutputFilesListBox.SelectedIndex, newPath);
+                    mOutputFilesListBox.Items[mOutputFilesListBox.SelectedIndex] = newPath;
+                    mOutputFiles.Remove(curFileInfo.FullName);
+                    mOutputFiles.Add(newPath);
+                }
+                else
+                {
+                    if(newPath != curFileInfo.FullName)
+                    {
+                        MessageBox.Show("Such output file is already used, output file path change aborted!");
+                    }
+                    
+                    
+                }
+                
+            }
         }
     }
 }

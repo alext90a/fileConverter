@@ -26,6 +26,9 @@ namespace FileConverter
         public delegate void OnNextFileProcessed(string fileIndex, string fileName);
         OnNextFileProcessed mOnNextFileProcessed = null;
 
+        public delegate void OnExceptionOccured(string description);
+        OnExceptionOccured mOnExceptionOccured = null;
+
         public FileConverter()
         {
 
@@ -45,25 +48,46 @@ namespace FileConverter
             return mOutputFiles;
         }
 
-        public void startConvert(OnConvertCompleted completeFunc, OnLinesBatchProcessed batchProcFunc, OnNextFileProcessed nextFileFunc)
+        public void startConvert(OnConvertCompleted completeFunc, OnLinesBatchProcessed batchProcFunc, OnNextFileProcessed nextFileFunc, OnExceptionOccured onExceptFunc)
         {
-            mConvertTime = new TimeSpan();
-            mOnConverCompleted = completeFunc;
-            mOnLinesBatchProcessed = batchProcFunc;
-            mOnNextFileProcessed = nextFileFunc;
-            StringBuilder sb = new StringBuilder();
-            for(int i=0; i<mInputFiles.Count; ++i)
+            mOnExceptionOccured = onExceptFunc;
+            try
             {
-                sb.Clear();
-                sb.Append((i+1).ToString() + "/" + mInputFiles.Count.ToString());
-                mOnNextFileProcessed(sb.ToString(), mInputFiles[i].Name);
-                convertSelectedFile(mInputFiles[i].FullName, mOutputFiles[i]);
-            }
+                mConvertTime = new TimeSpan();
+                mOnConverCompleted = completeFunc;
+                mOnLinesBatchProcessed = batchProcFunc;
+                mOnNextFileProcessed = nextFileFunc;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < mInputFiles.Count; ++i)
+                {
+                    sb.Clear();
+                    sb.Append((i + 1).ToString() + "/" + mInputFiles.Count.ToString());
+                    mOnNextFileProcessed(sb.ToString(), mInputFiles[i].Name);
+                    convertSelectedFile(mInputFiles[i].FullName, mOutputFiles[i]);
+                }
 
-            //TimeSpan ts = new TimeSpan(3, 42, 0);
-            string convertTime = String.Format("{0:%h} hours {0:%m} minutes {0:%s\\.ff} seconds", mConvertTime);
-            //Console.WriteLine("{0:%h} hours {0:%m} minutes", ts);
-            mOnConverCompleted(convertTime);
+                //TimeSpan ts = new TimeSpan(3, 42, 0);
+                string convertTime = String.Format("{0:%h} hours {0:%m} minutes {0:%s\\.ff} seconds", mConvertTime);
+                //Console.WriteLine("{0:%h} hours {0:%m} minutes", ts);
+                mOnConverCompleted(convertTime);
+            }
+            catch(Exception e)
+            {
+                mOnExceptionOccured(e.ToString());
+            }
+            
+        }
+
+        /*
+        public FileInfo getFileInfo(int index)
+        {
+            return mInputFiles[index];
+        }
+        */
+
+        public void setFileOutputPath(int index, string filePath)
+        {
+            mOutputFiles[index] = filePath;
         }
 
         public bool isNeedPunctuationDelete
@@ -99,8 +123,7 @@ namespace FileConverter
         void convertSelectedFile(string inputFileName, string outputFileName)
         {
 
-            FileInfo curInfo = new FileInfo(inputFileName);
-            long fileLength = curInfo.Length;
+
             StreamReader inputReader = File.OpenText(inputFileName);
             
             if (File.Exists(outputFileName))
@@ -168,7 +191,11 @@ namespace FileConverter
                     curWord.Clear();
                 }
             }
-            createdString.Append(curWord);
+            if (curWord.Length >= minLength)
+            {
+                createdString.Append(curWord);
+
+            }
             createdString.Append("\n");
             outputString = createdString.ToString();
             return outputString;

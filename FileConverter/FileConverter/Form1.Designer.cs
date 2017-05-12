@@ -37,17 +37,20 @@
             this.mMinWordLenNum = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.mFileConvertGB = new System.Windows.Forms.GroupBox();
-            this.mProcGB = new System.Windows.Forms.GroupBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.mLinesProcessed = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.mFileName = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.mFileIndex = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.mConvertTime = new System.Windows.Forms.Label();
+            this.mEditOutput = new System.Windows.Forms.Button();
             this.mDelSelBtn = new System.Windows.Forms.Button();
+            this.mConvertTime = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.mProcGB = new System.Windows.Forms.GroupBox();
+            this.mFileIndex = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.mFileName = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.mLinesProcessed = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.mExceptionBox = new System.Windows.Forms.TextBox();
+            this.mErrorGB = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.mMinWordLenNum)).BeginInit();
             this.mFileConvertGB.SuspendLayout();
             this.mProcGB.SuspendLayout();
@@ -82,6 +85,7 @@
             this.mOutputFilesListBox.Name = "mOutputFilesListBox";
             this.mOutputFilesListBox.Size = new System.Drawing.Size(195, 95);
             this.mOutputFilesListBox.TabIndex = 3;
+            this.mOutputFilesListBox.SelectedIndexChanged += new System.EventHandler(this.mOutputFilesListBox_SelectedIndexChanged);
             // 
             // mConvertBtn
             // 
@@ -129,6 +133,7 @@
             // 
             // mFileConvertGB
             // 
+            this.mFileConvertGB.Controls.Add(this.mEditOutput);
             this.mFileConvertGB.Controls.Add(this.mDelSelBtn);
             this.mFileConvertGB.Controls.Add(this.mConvertTime);
             this.mFileConvertGB.Controls.Add(this.label2);
@@ -139,12 +144,51 @@
             this.mFileConvertGB.Controls.Add(this.mOutputFilesListBox);
             this.mFileConvertGB.Controls.Add(this.mSelectInputFiles);
             this.mFileConvertGB.Controls.Add(this.mInputFileListBox);
+            this.mFileConvertGB.Controls.Add(this.mExceptionBox);
+            this.mFileConvertGB.Controls.Add(this.mErrorGB);
             this.mFileConvertGB.Location = new System.Drawing.Point(30, 8);
             this.mFileConvertGB.Name = "mFileConvertGB";
             this.mFileConvertGB.Size = new System.Drawing.Size(501, 265);
             this.mFileConvertGB.TabIndex = 11;
             this.mFileConvertGB.TabStop = false;
             this.mFileConvertGB.Text = "Files convert settings";
+            // 
+            // mEditOutput
+            // 
+            this.mEditOutput.Location = new System.Drawing.Point(236, 18);
+            this.mEditOutput.Name = "mEditOutput";
+            this.mEditOutput.Size = new System.Drawing.Size(75, 23);
+            this.mEditOutput.TabIndex = 13;
+            this.mEditOutput.Text = "Edit output";
+            this.mEditOutput.UseVisualStyleBackColor = true;
+            this.mEditOutput.Click += new System.EventHandler(this.mEditOutput_Click);
+            // 
+            // mDelSelBtn
+            // 
+            this.mDelSelBtn.Location = new System.Drawing.Point(114, 18);
+            this.mDelSelBtn.Name = "mDelSelBtn";
+            this.mDelSelBtn.Size = new System.Drawing.Size(75, 23);
+            this.mDelSelBtn.TabIndex = 12;
+            this.mDelSelBtn.Text = "Del selected";
+            this.mDelSelBtn.UseVisualStyleBackColor = true;
+            this.mDelSelBtn.Click += new System.EventHandler(this.mDelSelBtn_Click);
+            // 
+            // mConvertTime
+            // 
+            this.mConvertTime.AutoSize = true;
+            this.mConvertTime.Location = new System.Drawing.Point(326, 162);
+            this.mConvertTime.Name = "mConvertTime";
+            this.mConvertTime.Size = new System.Drawing.Size(0, 13);
+            this.mConvertTime.TabIndex = 11;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(236, 162);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(83, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Convertion time:";
             // 
             // mProcGB
             // 
@@ -163,54 +207,14 @@
             this.mProcGB.Text = "Processing output";
             this.mProcGB.Visible = false;
             // 
-            // pictureBox1
+            // mFileIndex
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(190, 45);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(69, 72);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
-            // mLinesProcessed
-            // 
-            this.mLinesProcessed.AutoSize = true;
-            this.mLinesProcessed.Location = new System.Drawing.Point(222, 137);
-            this.mLinesProcessed.Name = "mLinesProcessed";
-            this.mLinesProcessed.Size = new System.Drawing.Size(25, 13);
-            this.mLinesProcessed.TabIndex = 1;
-            this.mLinesProcessed.Text = "125";
-            this.mLinesProcessed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(117, 137);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(87, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Lines processed:";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(144, 120);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Current file:";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // mFileName
-            // 
-            this.mFileName.AutoSize = true;
-            this.mFileName.Location = new System.Drawing.Point(225, 120);
-            this.mFileName.Name = "mFileName";
-            this.mFileName.Size = new System.Drawing.Size(34, 13);
-            this.mFileName.TabIndex = 4;
-            this.mFileName.Text = "file.txt";
+            this.mFileIndex.AutoSize = true;
+            this.mFileIndex.Location = new System.Drawing.Point(225, 20);
+            this.mFileIndex.Name = "mFileIndex";
+            this.mFileIndex.Size = new System.Drawing.Size(0, 13);
+            this.mFileIndex.TabIndex = 6;
+            this.mFileIndex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label6
             // 
@@ -222,48 +226,80 @@
             this.label6.Text = "Files:";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // mFileIndex
+            // mFileName
             // 
-            this.mFileIndex.AutoSize = true;
-            this.mFileIndex.Location = new System.Drawing.Point(225, 20);
-            this.mFileIndex.Name = "mFileIndex";
-            this.mFileIndex.Size = new System.Drawing.Size(24, 13);
-            this.mFileIndex.TabIndex = 6;
-            this.mFileIndex.Text = "1/3";
-            this.mFileIndex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.mFileName.AutoSize = true;
+            this.mFileName.Location = new System.Drawing.Point(225, 120);
+            this.mFileName.Name = "mFileName";
+            this.mFileName.Size = new System.Drawing.Size(0, 13);
+            this.mFileName.TabIndex = 4;
             // 
-            // label2
+            // label4
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(236, 162);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(83, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "Convertion time:";
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(144, 120);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Current file:";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // mConvertTime
+            // label3
             // 
-            this.mConvertTime.AutoSize = true;
-            this.mConvertTime.Location = new System.Drawing.Point(326, 162);
-            this.mConvertTime.Name = "mConvertTime";
-            this.mConvertTime.Size = new System.Drawing.Size(0, 13);
-            this.mConvertTime.TabIndex = 11;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(117, 137);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(87, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Lines processed:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // mDelSelBtn
+            // mLinesProcessed
             // 
-            this.mDelSelBtn.Location = new System.Drawing.Point(114, 18);
-            this.mDelSelBtn.Name = "mDelSelBtn";
-            this.mDelSelBtn.Size = new System.Drawing.Size(75, 23);
-            this.mDelSelBtn.TabIndex = 12;
-            this.mDelSelBtn.Text = "Del selected";
-            this.mDelSelBtn.UseVisualStyleBackColor = true;
-            this.mDelSelBtn.Click += new System.EventHandler(this.mDelSelBtn_Click);
+            this.mLinesProcessed.AutoSize = true;
+            this.mLinesProcessed.Location = new System.Drawing.Point(222, 137);
+            this.mLinesProcessed.Name = "mLinesProcessed";
+            this.mLinesProcessed.Size = new System.Drawing.Size(13, 13);
+            this.mLinesProcessed.TabIndex = 1;
+            this.mLinesProcessed.Text = "0";
+            this.mLinesProcessed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(190, 45);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(69, 72);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // mExceptionBox
+            // 
+            this.mExceptionBox.ForeColor = System.Drawing.Color.Red;
+            this.mExceptionBox.Location = new System.Drawing.Point(208, 195);
+            this.mExceptionBox.Multiline = true;
+            this.mExceptionBox.Name = "mExceptionBox";
+            this.mExceptionBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.mExceptionBox.Size = new System.Drawing.Size(278, 57);
+            this.mExceptionBox.TabIndex = 16;
+            this.mExceptionBox.Visible = false;
+            // 
+            // mErrorGB
+            // 
+            this.mErrorGB.Location = new System.Drawing.Point(196, 178);
+            this.mErrorGB.Name = "mErrorGB";
+            this.mErrorGB.Size = new System.Drawing.Size(299, 81);
+            this.mErrorGB.TabIndex = 15;
+            this.mErrorGB.TabStop = false;
+            this.mErrorGB.Text = "Error:";
+            this.mErrorGB.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(549, 476);
+            this.ClientSize = new System.Drawing.Size(549, 490);
             this.Controls.Add(this.mProcGB);
             this.Controls.Add(this.mFileConvertGB);
             this.Name = "Form1";
@@ -298,6 +334,9 @@
         private System.Windows.Forms.Label mConvertTime;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button mDelSelBtn;
+        private System.Windows.Forms.Button mEditOutput;
+        private System.Windows.Forms.TextBox mExceptionBox;
+        private System.Windows.Forms.GroupBox mErrorGB;
     }
 }
 
