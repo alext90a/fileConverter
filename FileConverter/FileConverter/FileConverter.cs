@@ -9,7 +9,7 @@ namespace FileConverter
 {
     class FileConverter
     {
-        List<string> mInputFiles = new List<string>();
+        List<FileInfo> mInputFiles = new List<FileInfo>();
         List<string> mOutputFiles = new List<string>();
         string kDefaultConverterSuffix = "_converted";
         List<char> mDeletedChars = new List<char>() { ',', '.', '!', '?', ':', ';' };
@@ -22,6 +22,9 @@ namespace FileConverter
         public delegate void OnLinesBatchProcessed(string linesAmount);
         OnLinesBatchProcessed mOnLinesBatchProcessed = null;
 
+        public delegate void OnNextFileProcessed(string fileIndex, string fileName);
+        OnNextFileProcessed mOnNextFileProcessed = null;
+
         public FileConverter()
         {
 
@@ -29,13 +32,14 @@ namespace FileConverter
 
         public void setInputFiles(string[] inputFiles)
         {
-            mInputFiles.AddRange(inputFiles);
+
+            
             for(int i=0; i<inputFiles.Length; ++i)
             {
-                int delimIndex = inputFiles[i].LastIndexOf('.');
-                string filePath = inputFiles[i].Substring(0, inputFiles[i].LastIndexOf('.'));
-                string fileExt = inputFiles[i].Substring(delimIndex + 1, inputFiles[i].Length - delimIndex - 1);
-                mOutputFiles.Add(filePath + kDefaultConverterSuffix + '.' + fileExt);
+                mInputFiles.Add(new FileInfo(inputFiles[i]));
+
+                
+                mOutputFiles.Add(mInputFiles[i].FullName.Substring(0, mInputFiles[i].FullName.LastIndexOf('.')) + kDefaultConverterSuffix + mInputFiles[i].Extension);
             }
         }
 
@@ -44,13 +48,18 @@ namespace FileConverter
             return mOutputFiles;
         }
 
-        public void startConvert(OnConvertCompleted completeFunc, OnLinesBatchProcessed batchProcFunc)
+        public void startConvert(OnConvertCompleted completeFunc, OnLinesBatchProcessed batchProcFunc, OnNextFileProcessed nextFileFunc)
         {
             mOnConverCompleted = completeFunc;
             mOnLinesBatchProcessed = batchProcFunc;
+            mOnNextFileProcessed = nextFileFunc;
+            StringBuilder sb = new StringBuilder();
             for(int i=0; i<mInputFiles.Count; ++i)
             {
-                convertSelectedFile(mInputFiles[i], mOutputFiles[i]);
+                sb.Clear();
+                sb.Append(i.ToString() + "/" + mInputFiles.Count.ToString());
+                mOnNextFileProcessed(sb.ToString(), mInputFiles[i].Name);
+                convertSelectedFile(mInputFiles[i].FullName, mOutputFiles[i]);
             }
         }
 

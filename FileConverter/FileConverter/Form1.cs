@@ -38,7 +38,7 @@ namespace FileConverter
             openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             if(openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string[] inputFiles = openFileDialog.FileNames;
+                string[] inputFiles = openFileDialog.FileNames;                
                 mInputFileListBox.Items.Clear();
                 mOutputFilesListBox.Items.Clear();
                 mInputFileListBox.Items.AddRange(inputFiles);
@@ -56,7 +56,7 @@ namespace FileConverter
             mFileConvertGB.Enabled = false;
             mProcGB.Visible = true;
             //mProcGB.Update();
-            Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted, linesProcessed); });
+            Task.Factory.StartNew(() => { mFileConverter.startConvert(convertCompleted, linesProcessed, nextFileProccessed); });
             
         }
 
@@ -95,6 +95,15 @@ namespace FileConverter
             this.Invoke((MethodInvoker)delegate
             {
                 mLinesProcessed.Text = linesAmount;
+            });
+        }
+
+        void nextFileProccessed(string fileIndex, string fileName)
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                mFileIndex.Text = fileIndex;
+                mFileName.Text = fileName;
             });
         }
 

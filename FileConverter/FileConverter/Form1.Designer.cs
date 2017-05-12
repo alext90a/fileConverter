@@ -42,9 +42,9 @@
             this.mLinesProcessed = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.mFileName = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
+            this.mFileIndex = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.mMinWordLenNum)).BeginInit();
             this.mFileConvertGB.SuspendLayout();
             this.mProcGB.SuspendLayout();
@@ -141,9 +141,9 @@
             // 
             // mProcGB
             // 
-            this.mProcGB.Controls.Add(this.label7);
+            this.mProcGB.Controls.Add(this.mFileIndex);
             this.mProcGB.Controls.Add(this.label6);
-            this.mProcGB.Controls.Add(this.label5);
+            this.mProcGB.Controls.Add(this.mFileName);
             this.mProcGB.Controls.Add(this.label4);
             this.mProcGB.Controls.Add(this.label3);
             this.mProcGB.Controls.Add(this.mLinesProcessed);
@@ -196,14 +196,14 @@
             this.label4.Text = "Current file:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label5
+            // mFileName
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(225, 120);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(34, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "file.txt";
+            this.mFileName.AutoSize = true;
+            this.mFileName.Location = new System.Drawing.Point(225, 120);
+            this.mFileName.Name = "mFileName";
+            this.mFileName.Size = new System.Drawing.Size(34, 13);
+            this.mFileName.TabIndex = 4;
+            this.mFileName.Text = "file.txt";
             // 
             // label6
             // 
@@ -215,15 +215,15 @@
             this.label6.Text = "Files:";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label7
+            // mFileIndex
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(225, 20);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(24, 13);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "1/3";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.mFileIndex.AutoSize = true;
+            this.mFileIndex.Location = new System.Drawing.Point(225, 20);
+            this.mFileIndex.Name = "mFileIndex";
+            this.mFileIndex.Size = new System.Drawing.Size(24, 13);
+            this.mFileIndex.TabIndex = 6;
+            this.mFileIndex.Text = "1/3";
+            this.mFileIndex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
@@ -257,9 +257,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label mLinesProcessed;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label mFileIndex;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label mFileName;
         private System.Windows.Forms.Label label4;
     }
 }
